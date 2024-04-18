@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Report Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js" integrity="sha512-9C5MnzcGvRoJujI5xBWfLPEcN9QYwgdZ2pnFyW+zJdZNGM2Mj7/lBb7aZivL8n92mXnQVrEYzlpHjJ41F66lcQ==" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>PDF Report Generator</h1>
+<form>
+  <label for="Bid">Enter Baby ID:</label><br>
+  <input type="text" id="Bid" name="Bid"><br><br>
+  <button type="button" id="read">Generate Report</button>
+</form>
+<div id="pdfContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
+<script>
+  // Your Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyC3eLfXLlxDiFxqJb519JCpkOyoJlIzy2g",
+    authDomain: "mohdb-be274.firebaseapp.com",
+    databaseURL: "https://mohdb-be274-default-rtdb.firebaseio.com",
+    projectId: "mohdb-be274",
+    storageBucket: "mohdb-be274.appspot.com",
+    messagingSenderId: "110826998013",
+    appId: "1:110826998013:web:05772cab0a59f10fe09694"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  document.getElementById("read").onclick = function () {
+    var BidV = document.getElementById("Bid").value;
+
+    // Initialize jsPDF
+    var doc = new jsPDF();
+
+    // Fetch data from Firebase and populate the PDF
+    firebase.database().ref("Main/" + BidV + "/ParentInfo").on("value", function (snap) {
+      var parentInfo = snap.val();
+
+      // Add parent info to the PDF
+      doc.text(20, 20, "Parent Information:");
+      doc.text(20, 30, `Name: ${parentInfo.name}`);
+      doc.text(20, 40, `Gender: ${parentInfo.gender}`);
+      doc.text(20, 50, `Place of Birth: ${parentInfo.placeOfBirth}`);
+      doc.text(20, 60, `Mother's Name: ${parentInfo.motherName}`);
+      doc.text(20, 70, `Father's Name: ${parentInfo.fatherName}`);
+      doc.text(20, 80, `Address: ${parentInfo.address}`);
+      doc.text(20, 90, `Phone Number: ${parentInfo.phoneNumber}`);
+      doc.text(20, 100, `Email: ${parentInfo.email}`);
+
+      // Fetch medical info
+      firebase.database().ref("Main/" + BidV + "/MedicalInfo").on("value", function (snap) {
+        var medicalInfo = snap.val();
+
+        // Add medical info to the PDF
+        doc.text(20, 120, "Medical Information:");
+        doc.text(20, 130, `Date of Birth: ${medicalInfo.dateOfBirth}`);
+        doc.text(20, 140, `Time of Birth: ${medicalInfo.timeOfBirth}`);
+        doc.text(20, 150, `Birth Weight: ${medicalInfo.BirthWeight}`);
+        doc.text(20, 160, `Length at Birth: ${medicalInfo.LengthAtBirth}`);
+        doc.text(20, 170, `Apga Score: ${medicalInfo.ApgaScore}`);
+        doc.text(20, 180, `Blood Type: ${medicalInfo.BloodType}`);
+        doc.text(20, 190, `Immediate Health Concerns: ${medicalInfo.immediateHealthConcerns}`);
+        doc.text(20, 200, `Record of Vaccinations: ${medicalInfo.RecordOfVaccinations}`);
+        doc.text(20, 210, `Medical Procedures: ${medicalInfo.medicalProcedures}`);
+
+        // Save the PDF and display
+        var pdfDataUri = doc.output('datauristring');
+        var pdfContainer = document.getElementById("pdfContainer");
+        pdfContainer.innerHTML = '<iframe width="100%" height="500px" src="' + pdfDataUri + '"></iframe>';
+      });
+    });
+  };
+</script>
+</body>
+</html>

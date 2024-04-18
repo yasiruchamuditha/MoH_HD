@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!-- Include Bootstrap and any other CSS files -->
+    <link rel="stylesheet" href="css/logi.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+<div class="wrapper">
+    <form>
+      <h1>Login</h1>
+      <div class="input-box">
+        <input type="text" placeholder="Username" name="login_email" id="login_email" required>
+        <i class='bx bxs-user'></i>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="Password" name="login_password" id="login_password" required>
+        <i class='bx bxs-lock-alt' ></i>
+      </div>
+      <div class="remember-forgot">
+        <label><input type="checkbox">Remember Me</label>
+        <a href="#">Forgot Password</a>
+      </div>
+      <button type="button" class="btn" id="admin-login" name="admin-login">Admin Login</button>
+      <div class="register-link">
+        <p>Don't have an account? <a href="registration.html">Register</a></p>
+        <br>
+        <hr>
+        <br>
+        <h4>Sign In with</h4>
+        <br>
+        <div class="gbtn">
+          <button type="button" class="btn gbtn" id="google-login" name="google-login"><i class='bx bxl-google'></i> Google</button>
+        </div>
+      </div>
+    </form>
+</div>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3eLfXLlxDiFxqJb519JCpkOyoJlIzy2g",
+  authDomain: "mohdb-be274.firebaseapp.com",
+  databaseURL: "https://mohdb-be274-default-rtdb.firebaseio.com",
+  projectId: "mohdb-be274",
+  storageBucket: "mohdb-be274.appspot.com",
+  messagingSenderId: "110826998013",
+  appId: "1:110826998013:web:05772cab0a59f10fe09694"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    const provider = new GoogleAuthProvider();
+
+    // //----- Login code start	  
+    document.getElementById("admin-login").addEventListener("click", function() {
+        var email = document.getElementById("login_email").value;
+        var password = document.getElementById("login_password").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Redirect to userservice.html upon successful login
+          window.location.href = "MOHservice.html";
+        })
+        .catch((error) => {
+          // Show popup message for failed login
+          alert("Admin login failed. Please check your credentials and try again..");
+        });		  		  
+    });
+
+    //----- Admin login code start	  
+    // document.getElementById("admin-login").addEventListener("click", function() {
+    //     var email = document.getElementById("login_email").value;
+    //     var password = document.getElementById("login_password").value;
+        
+    //     // Check if the entered credentials are for admin
+    //     if (email === "admin@gmail.com" && password === "admin123") {
+    //       // Redirect to adminservice.html upon successful admin login
+    //       window.location.href = "MOHservice.html";
+    //     } else {
+    //       alert("Admin login failed. Please check your credentials and try again.");
+    //     }        
+    // });
+
+    //----- Google login code start	  
+    document.getElementById("google-login").addEventListener("click", function() {
+        signInWithPopup(auth, provider)
+        .then((result) => {
+          // Redirect to userservice.html upon successful login with Google
+          window.location.href = "MOHservice.html";
+        })
+        .catch((error) => {
+          // Show popup message for failed Google login
+          alert("Google login failed. Please try again.");
+        });		  		  
+    });
+</script>
+</body>
+</html>

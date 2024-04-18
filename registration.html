@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <!-- Include Bootstrap and any other CSS files -->
+    <link rel="stylesheet" href="css/logi.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+<!-- 
+<div class="container">   
+    <form name="registration_form" id="registration_form" method="post" action="#" enctype="multipart/form-data" autocomplete="off">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" name="useremail" id="email" class="form-control" placeholder="Enter your email" autocomplete="off">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="userpassword" id="password" class="form-control" placeholder="Enter your password" autocomplete="off">
+                </div>
+
+                <button type="button" id="register" name="register" class="btn btn-success">Register Now</button>
+            </div>
+
+            <div class="container"> 
+                <div class="row">
+                     <div class="col-sm-4">
+                      <button type="button" id="google-login" name="google-login" class="btn btn-danger btn-lg btn-block"><i class="fa fa-google "></i> Login with Google</button>
+                  </div>  
+                </div>  
+                </form>
+              </div>
+              <br>
+
+        </div>
+    </form>
+</div> -->
+<div class="wrapper">
+    <form action="">
+      <h1>Sign Up</h1>
+      <div class="input-box">
+        <input type="text" placeholder="Username" name="login_email" id="login_email" required>
+        <i class='bx bxs-user'></i>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="Password" name="login_password" id="login_password" required>
+        <i class='bx bxs-lock-alt' ></i>
+      </div>
+      <div class="remember-forgot">
+        <!-- <label><input type="checkbox">Remember Me</label>
+        <a href="#">Forgot Password</a> -->
+      </div>
+
+      <button type="submit" class="btn" id="register" name="register">Register</button>
+
+      <div class="register-link">
+        <p>You have an account? <a href="login.html">Sign In</a></p>
+        <br>
+        <hr>
+        <br>
+        <h4>Sign Up with</h4>
+        <br>
+        <div class="gbtn">
+          <button type="submit" class="btn gbtn" id="google-login" name="google-login"><i class='bx bxl-google'></i> Google</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+<!-- Include jQuery and Firebase SDK if necessary -->
+
+
+</body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+     //add firebase authentication
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    console.log(app);
+
+    const provider = new GoogleAuthProvider();
+    console.log(provider);
+    
+
+    //----- New Registration code start   
+    document.getElementById("register").addEventListener("click", function() {
+        var email =  document.getElementById("login_email").value;
+        var password = document.getElementById("login_password").value;
+        //For new registration
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          console.log(user);
+          
+          window.location.href = "home.html";
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+          console.log(errorMessage);
+          // alert(error);
+        });           
+    });
+    //----- End
+
+    //----- Login code start    
+    // document.getElementById("login").addEventListener("click", function() {
+    //     var email =  document.getElementById("login_email").value;
+    //     var password = document.getElementById("login_password").value;
+
+    //     signInWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //       // Signed in 
+    //       const user = userCredential.user;
+    //       console.log(user);
+    //       alert(user.email+" Login successfully!!!");
+    //       document.getElementById('logout').style.display = 'block';
+    //       // ...
+    //     })
+    //     .catch((error) => {
+    //       const errorCode = error.code;
+    //       const errorMessage = error.message;
+    //       console.log(errorMessage);
+    //       alert(errorMessage);
+    //     });            
+    // });
+    // //----- End
+
+    //----- Logout code start   
+    // document.getElementById("logout").addEventListener("click", function() {
+    //     signOut(auth).then(() => {
+    //         // Sign-out successful.
+    //         console.log('Sign-out successful.');
+    //         alert('Sign-out successful.');
+    //         document.getElementById('logout').style.display = 'none';
+    //       }).catch((error) => {
+    //         // An error happened.
+    //         console.log('An error happened.');
+    //       });            
+    // });
+    // //----- End
+
+    //----- Google login code start   
+    document.getElementById("google-login").addEventListener("click", function() {
+        signInWithPopup(auth, provider)
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          // The signed-in user info.
+          const user = result.user;
+          alert("Welcome "+user.displayName);
+          console.log(user);
+          // ...
+        }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorMessage);
+          // The email of the user's account used.
+          const email = error.customData.email;
+          // The AuthCredential type that was used.
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          clearFormFields();
+          // ...
+        });           
+    });
+    function clearFormFields() {
+        document.getElementById("login_email").value = "";
+    document.getElementById("login_password").value = "";
+   
+}
+    //----- End
+  </script>
+</html>
